@@ -10,6 +10,7 @@
   --bg:#1d1a30;
   --panel:#f8f8f0;
   --panel-2:#eef0e6;
+  --card-bg:#fff;
   --line:#8b8b6b;
   --border-dark:#1a1a2e;
   --border-blue:#3b4cca;
@@ -23,20 +24,63 @@
   --yellow:#ffcb05;
   --mono:'VT323', monospace;
   --pixel:'Press Start 2P', monospace;
+  --theme-transition: background-color .25s ease, border-color .25s ease, color .25s ease;
+}
+/* ================= Themen =================
+   Farbthemen als Datenattribut auf <html>, per Einstellungen-Tab wählbar (nur Optik,
+   keinerlei Funktionsänderung). Logo-Farben (Banner/Boot-Schriftzug) bleiben bewusst
+   Marken-konstant über alle Themen — alles andere (Flächen, Rahmen, Text, Akzente) themt mit. */
+[data-theme="pocket"]{
+  --bg:#0a2408; --panel:#9bbc0f; --panel-2:#8bac0f; --card-bg:#c6e08a;
+  --line:#306230; --border-dark:#0f380f; --border-blue:#306230;
+  --text:#0f380f; --text-dim:#3f6b3f; --accent:#1f4d1f; --accent-dim:#c6e08a;
+  --danger:#7a2020; --danger-dim:#e0b8b8; --lock:#5a7a5a; --yellow:#c8d84f;
+  --bg-glow-1:#1f4d1f; --bg-glow-2:#123312;
+}
+[data-theme="ember"]{
+  --bg:#2a1410; --panel:#fdf3e7; --panel-2:#f7e2c8; --card-bg:#fffdf9;
+  --line:#c98a4b; --border-dark:#2a1410; --border-blue:#c1440e;
+  --text:#2a1410; --text-dim:#8a5a3a; --accent:#e08b1d; --accent-dim:#ffe4b8;
+  --danger:#c1272d; --danger-dim:#ffd4d4; --lock:#a3836a; --yellow:#ffcb05;
+  --bg-glow-1:#4a2010; --bg-glow-2:#3a1408;
+}
+[data-theme="aqua"]{
+  --bg:#0a1f2e; --panel:#eef8fb; --panel-2:#dbf0f5; --card-bg:#ffffff;
+  --line:#5aa0b4; --border-dark:#0a1f2e; --border-blue:#1b6ca8;
+  --text:#0a1f2e; --text-dim:#4a7a8c; --accent:#0e9594; --accent-dim:#c9f2ef;
+  --danger:#d6304a; --danger-dim:#fbdadf; --lock:#7a9aa8; --yellow:#ffd166;
+  --bg-glow-1:#123a4a; --bg-glow-2:#0d2838;
+}
+[data-theme="twilight"]{
+  --bg:#14091f; --panel:#241832; --panel-2:#2e2040; --card-bg:#2e2040;
+  --line:#6b4a8b; --border-dark:#0d0616; --border-blue:#8a4fc9;
+  --text:#ede3f7; --text-dim:#b39ccf; --accent:#7dd3a0; --accent-dim:#bdead2;
+  --danger:#ff6b8a; --danger-dim:#ffd6de; --lock:#8a7a9a; --yellow:#f4c95d;
+  --bg-glow-1:#3a1f52; --bg-glow-2:#2a1440;
+}
+[data-theme="electric"]{
+  --bg:#2b2410; --panel:#fffbe8; --panel-2:#fff4c2; --card-bg:#ffffff;
+  --line:#d4a017; --border-dark:#2b2410; --border-blue:#3b4cca;
+  --text:#2b2410; --text-dim:#8a7020; --accent:#c98a00; --accent-dim:#fff0b3;
+  --danger:#d6304a; --danger-dim:#fbdadf; --lock:#a89860; --yellow:#ffcb05;
+  --bg-glow-1:#4a3a10; --bg-glow-2:#3a2c08;
 }
 *{box-sizing:border-box;}
+input, select, textarea, button{ color:inherit; font-family:inherit; }
 body{
   margin:0; background:
-    radial-gradient(circle at 20% 10%, #2c2854 0%, transparent 40%),
-    radial-gradient(circle at 80% 80%, #241f42 0%, transparent 40%),
+    radial-gradient(circle at 20% 10%, var(--bg-glow-1,#2c2854) 0%, transparent 40%),
+    radial-gradient(circle at 80% 80%, var(--bg-glow-2,#241f42) 0%, transparent 40%),
     var(--bg);
   color:var(--text); font-family:var(--mono); font-size:20px;
   padding:20px; min-height:100vh;
+  transition:var(--theme-transition);
 }
 .gba-box{
   background:var(--panel);
   border:4px solid var(--border-dark);
   box-shadow:0 0 0 4px var(--border-blue), 0 0 0 8px var(--border-dark), 6px 6px 0 rgba(0,0,0,0.35);
+  transition:var(--theme-transition);
   border-radius:6px;
   padding:16px;
   margin-bottom:16px;
@@ -57,37 +101,44 @@ h1{
 }
 .dot{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 6px var(--accent);flex-shrink:0;}
 .subtitle{color:var(--text-dim); font-size:17px; margin-bottom:14px;}
-.tabs{display:flex; gap:4px; margin-bottom:14px; flex-wrap:wrap;}
+.tabs{display:flex; gap:4px; margin-bottom:14px; flex-wrap:wrap; position:relative; z-index:1; padding-bottom:3px; border-bottom:3px solid var(--border-dark);}
 .tab{
   padding:8px 12px; cursor:pointer; color:var(--panel); background:var(--border-blue);
-  font-size:11px; font-family:var(--pixel); border:3px solid var(--border-dark);
-  border-radius:4px; user-select:none;
+  font-size:11px; font-family:var(--pixel); border:3px solid var(--border-dark); border-bottom:none;
+  border-radius:6px 6px 0 0; user-select:none; transition:var(--theme-transition), transform .08s ease;
+  position:relative; top:3px;
 }
-.tab.active{background:var(--yellow); color:var(--border-dark);}
+.tab:hover{ transform:translateY(-2px); }
+.tab.active{background:var(--yellow); color:var(--border-dark); top:0; box-shadow:0 -2px 0 rgba(0,0,0,0.08) inset;}
 .panel{display:none;}
 .panel.active{display:block;}
-.card{ background:var(--panel-2); border:3px solid var(--border-dark); border-radius:6px; padding:14px; margin-bottom:14px;}
+.card{ background:var(--panel-2); border:3px solid var(--border-dark); border-radius:6px; padding:14px; margin-bottom:14px; transition:var(--theme-transition);}
 .players-row{display:flex; gap:12px; margin-bottom:14px; flex-wrap:wrap;}
 .player-name-input{
-  background:#fff; border:3px solid var(--border-dark); color:var(--text);
+  background:var(--card-bg); border:3px solid var(--border-dark); color:var(--text);
   padding:6px 8px; border-radius:4px; font-family:var(--mono); font-size:16px; width:180px;
 }
 .btn{
   background:var(--border-blue); border:3px solid var(--border-dark); color:#fff;
   padding:8px 14px; border-radius:4px; cursor:pointer; font-size:13px; font-family:var(--pixel);
+  box-shadow:0 3px 0 rgba(0,0,0,0.35); transition:transform .06s ease, box-shadow .06s ease, filter .1s ease;
+  position:relative;
 }
 .btn:hover{filter:brightness(1.15);}
+.btn:active{ transform:translateY(3px); box-shadow:0 0 0 rgba(0,0,0,0.35); }
 .btn-primary{background:var(--accent); color:#0e2e13;}
 .btn-danger{background:var(--danger); color:#3a0007;}
-.btn-sm{padding:5px 9px; font-size:10px;}
+.btn-sm{padding:5px 9px; font-size:10px; box-shadow:0 2px 0 rgba(0,0,0,0.35);}
+.btn-sm:active{ transform:translateY(2px); box-shadow:0 0 0 rgba(0,0,0,0.35); }
 table{width:100%; border-collapse:collapse;}
 th{ text-align:left; font-family:var(--pixel); font-size:13px; color:var(--text-dim); padding:8px 6px; border-bottom:2px solid var(--line);}
 td{padding:8px 6px; border-bottom:1px solid var(--line); vertical-align:middle; font-size:18px;}
 tr:hover td{background:rgba(59,76,202,0.06);}
 input[type=text].route-input{ background:transparent; border:none; color:var(--text); font-size:16px; width:100%; border-bottom:1px dashed transparent; padding:4px 0; font-family:var(--mono);}
 input[type=text].route-input:focus{outline:none; border-bottom:1px dashed var(--border-blue);}
-.mon-cell{display:flex; align-items:center; gap:6px; flex-wrap:wrap;}
-.mon-input{ background:#fff; border:2px solid var(--line); color:var(--text); padding:5px 7px; border-radius:4px; font-size:15px; width:135px; font-family:var(--mono);}
+.mon-cell{display:flex; align-items:center; gap:8px; min-width:0;}
+.mon-cell-info{display:flex; flex-direction:column; align-items:flex-start; gap:3px; min-width:0; flex:1 1 auto; min-height:68px; justify-content:center;}
+.mon-input{ background:var(--card-bg); border:2px solid var(--line); color:var(--text); padding:5px 7px; border-radius:4px; font-size:15px; width:100%; max-width:135px; min-width:70px; box-sizing:border-box; font-family:var(--mono);}
 .mon-input.alive{border-color:var(--accent);}
 .check-label{display:flex; align-items:center; gap:4px; font-size:16px; color:var(--text-dim); cursor:pointer; white-space:nowrap;}
 .status-pill{ font-family:var(--pixel); font-size:11px; padding:5px 7px; border-radius:4px; white-space:nowrap; display:inline-block;}
@@ -96,9 +147,14 @@ input[type=text].route-input:focus{outline:none; border-bottom:1px dashed var(--
 .status-pending{background:#fff3c9; color:#5c4a00;}
 .del-btn{background:none; border:none; color:var(--text-dim); cursor:pointer; font-size:17px;}
 .del-btn:hover{color:var(--danger);}
-.family-row{ display:flex; align-items:center; gap:4px; flex-wrap:wrap; padding:6px 4px; border-bottom:1px solid var(--line);}
-.mon-chip{ display:flex; align-items:center; gap:4px; padding:5px 8px; border-radius:5px; font-size:17px; background:#fff; border:2px solid var(--line);}
-.mon-chip .num{color:var(--text-dim); font-family:var(--mono); font-size:13px;}
+.family-row{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding:8px 4px; border-bottom:1px solid var(--line);}
+.mon-chip{ display:flex; align-items:center; gap:8px; padding:6px 12px 6px 6px; border-radius:8px; font-size:17px; background:var(--card-bg); border:2px solid var(--line);}
+.mon-sprite{ width:44px; height:44px; image-rendering:pixelated; flex-shrink:0; vertical-align:middle;}
+.mon-sprite-sm{ width:32px; height:32px; image-rendering:pixelated; flex-shrink:0; vertical-align:middle;}
+.mon-sprite-lg{ width:80px; height:80px; image-rendering:pixelated; flex-shrink:0; vertical-align:middle;}
+.mon-sprite-xl{ width:96px; height:96px; image-rendering:pixelated; flex-shrink:0;}
+.mon-chip .num{color:var(--text-dim); font-family:var(--mono); font-size:13px; display:block;}
+.mon-chip .chip-info{ display:flex; flex-direction:column; line-height:1.25;}
 .mon-chip.caught{border-color:var(--accent); background:var(--accent-dim);}
 .mon-chip.locked{border-color:var(--lock); color:var(--lock); opacity:0.6;}
 .arrow{color:var(--text-dim); font-size:13px;}
@@ -106,27 +162,29 @@ input[type=text].route-input:focus{outline:none; border-bottom:1px dashed var(--
 .legend span{display:flex; align-items:center; gap:5px;}
 .swatch{width:10px; height:10px; border-radius:3px; display:inline-block;}
 .summary-bar{display:flex; gap:14px; margin-bottom:14px; flex-wrap:wrap;}
-.summary-item{ background:#fff; border:2px solid var(--line); border-radius:6px; padding:8px 14px; min-width:110px;}
+.summary-item{ background:var(--card-bg); border:2px solid var(--line); border-radius:6px; padding:8px 14px; min-width:110px;}
 .summary-item .n{font-family:var(--pixel); font-size:18px; color:var(--border-blue);}
 .summary-item .l{font-size:14px; color:var(--text-dim);}
-.search-box{ background:#fff; border:2px solid var(--line); color:var(--text); padding:7px 9px; border-radius:4px; font-size:16px; width:220px; margin-bottom:10px; font-family:var(--mono);}
+.search-box{ background:var(--card-bg); border:2px solid var(--line); color:var(--text); padding:7px 9px; border-radius:4px; font-size:16px; width:220px; margin-bottom:10px; font-family:var(--mono);}
 .save-indicator{font-size:15px; color:var(--text-dim);}
 .empty-hint{color:var(--text-dim); font-size:17px; padding:20px; text-align:center;}
 .type-badge{ display:inline-block; font-family:var(--pixel); font-size:10px; color:#fff; padding:4px 6px; border-radius:3px; margin-right:3px; text-shadow:1px 1px 0 rgba(0,0,0,0.3);}
-textarea.codebox{ width:100%; min-height:80px; font-family:var(--mono); font-size:14px; background:#fff; border:2px solid var(--line); border-radius:4px; padding:8px;}
-.tt-table{border-collapse:collapse; font-family:var(--mono); font-size:16px;}
-.tt-table th, .tt-table td{border:1px solid #999; padding:0;}
+textarea.codebox{ width:100%; min-height:80px; font-family:var(--mono); font-size:14px; background:var(--card-bg); border:2px solid var(--line); border-radius:4px; padding:8px;}
+.tt-table{border-collapse:collapse; font-family:var(--mono); font-size:16px; table-layout:fixed;}
+.tt-table th, .tt-table td{border:1px solid #999; padding:0; overflow:hidden;}
 .tt-corner{background:var(--panel-2); border:none !important;}
-.tt-super-hdr{background:var(--border-dark); color:#fff; padding:8px; font-size:16px; font-weight:bold; font-family:var(--pixel); letter-spacing:2px; text-align:center;}
-.tt-super-hdr-vert{background:var(--border-dark); color:#fff; padding:8px 4px; font-size:16px; font-weight:bold; font-family:var(--pixel); letter-spacing:2px; text-align:center; writing-mode:vertical-rl; transform:rotate(180deg); width:28px; max-width:28px;}
+.tt-super-hdr{background:var(--border-dark); color:#fff; height:14px; padding:0 4px; font-size:11px; font-weight:bold; font-family:var(--pixel); letter-spacing:1px; text-align:center;}
+.tt-super-hdr-vert{background:var(--border-dark); color:#fff; padding:6px 2px; font-size:11px; font-weight:bold; font-family:var(--pixel); letter-spacing:1px; text-align:center; writing-mode:vertical-rl; transform:rotate(180deg); width:14px; max-width:14px;}
 .tt-gen-note{font-family:var(--mono); font-size:13px; color:var(--text-dim); margin-bottom:8px;}
-.tt-group-hdr{padding:6px; font-size:13px; font-weight:bold; color:#fff; font-family:var(--pixel);}
+.tt-group-hdr{height:14px; padding:0 4px; font-size:11px; font-weight:bold; color:#fff; font-family:var(--pixel); text-align:center;}
 .tt-group-phys{background:#4a4a4a;}
 .tt-group-spec{background:#2a2a2a;}
-.tt-colhdr{ width:42px; height:36px; font-size:13px; font-weight:bold; cursor:default; text-align:center;}
-.tt-rowhdr{ width:110px; font-size:14px; font-weight:bold; padding:6px 8px; text-align:left; cursor:default; white-space:nowrap;}
-.tt-grouplabel{ writing-mode:vertical-rl; transform:rotate(180deg); background:var(--panel-2); color:var(--text-dim); font-size:11px; font-family:var(--pixel); padding:4px; width:20px; text-align:center;}
-.tt-cell{ width:42px; height:34px; text-align:center; font-family:var(--mono); font-size:15px; font-weight:bold; background:#fff; cursor:default;}
+.tt-colhdr{ width:30px; height:30px; font-size:11px; font-weight:bold; cursor:default; text-align:center;}
+.tt-rowhdr{ width:34px; font-size:11px; font-weight:bold; padding:4px 2px; text-align:center; cursor:default; white-space:nowrap;}
+.tt-grouplabel{ writing-mode:vertical-rl; transform:rotate(180deg); font-size:11px; font-weight:bold; color:#fff; font-family:var(--pixel); padding:4px 2px; width:14px; text-align:center;}
+.tt-grouplabel.tt-group-phys{background:#4a4a4a;}
+.tt-grouplabel.tt-group-spec{background:#2a2a2a;}
+.tt-cell{ width:30px; height:30px; text-align:center; font-family:var(--mono); font-size:12px; font-weight:bold; background:var(--card-bg); cursor:default;}
 .tt-cell.tt-2{background:#2fa84f; color:#fff;}
 .tt-cell.tt-05{background:#d6304a; color:#fff;}
 .tt-cell.tt-0{background:#1a1a1a; color:#fff;}
@@ -139,22 +197,23 @@ textarea.codebox{ width:100%; min-height:80px; font-family:var(--mono); font-siz
 .tt-hl-active{ outline:3px solid #ff5722; outline-offset:-3px; z-index:2; position:relative;}
 
 .fight-nav{display:flex; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap;}
-.fight-card{background:#fff; border:3px solid var(--border-blue); border-radius:6px; padding:14px; margin-bottom:12px;}
+.fight-card{background:var(--card-bg); border:3px solid var(--border-blue); border-radius:6px; padding:14px; margin-bottom:12px;}
 .cap-table{width:100%; border-collapse:collapse; margin-top:8px;}
 .cap-table td, .cap-table th{padding:8px 10px; font-size:19px; border-bottom:1px solid var(--line);}
 .over-cap{color:var(--danger); font-weight:bold;}
-.team-slot{background:#fff; border:2px solid var(--line); border-radius:6px; padding:10px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;}
-.team-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:6px;}
-.team-box{ background:#fff; border:3px dashed var(--line); border-radius:8px; min-height:100px; padding:8px; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; position:relative; font-size:15px;}
+.team-slot{background:var(--card-bg); border:2px solid var(--line); border-radius:6px; padding:10px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;}
+.team-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:10px; margin-bottom:6px;}
+.team-box{ background:var(--card-bg); border:3px dashed var(--line); border-radius:8px; min-height:96px; padding:10px 28px 10px 10px; display:flex; flex-direction:row; justify-content:flex-start; align-items:center; text-align:left; gap:10px; position:relative; font-size:15px;}
 .team-box.filled{border-style:solid; border-color:var(--accent); background:var(--accent-dim);}
-.team-box .remove-x{position:absolute; top:4px; right:6px; cursor:pointer; color:var(--text-dim); font-size:16px;}
+.team-box .remove-x{position:absolute; top:4px; right:6px; cursor:pointer; color:var(--text-dim); font-size:16px; z-index:1;}
 .team-box .remove-x:hover{color:var(--danger);}
+.team-box .tb-info{ display:flex; flex-direction:column; align-items:flex-start; gap:2px; min-width:0;}
 .team-box .tb-name{font-weight:bold; font-size:16px;}
-.evolve-select{margin-top:4px; font-family:var(--mono); font-size:13px; padding:2px 4px; border-radius:3px; border:1px solid var(--line); background:#fff;}
-.avail-card{ display:flex; justify-content:space-between; align-items:center; background:#fff; border:2px solid var(--line); border-radius:6px; padding:8px 10px; margin-bottom:6px; cursor:grab; gap:8px; flex-wrap:wrap;}
+.evolve-select{margin-top:4px; font-family:var(--mono); font-size:13px; padding:2px 4px; border-radius:3px; border:1px solid var(--line); background:var(--card-bg);}
+.avail-card{ display:flex; justify-content:space-between; align-items:center; background:var(--card-bg); border:2px solid var(--line); border-radius:6px; padding:8px 10px; margin-bottom:6px; cursor:grab; gap:8px; flex-wrap:wrap;}
 .weak-chip{display:inline-flex; align-items:center; gap:4px; padding:5px 9px; border-radius:5px; font-size:14px; margin:3px 4px 3px 0; font-family:var(--mono);}
 .cheat-row{display:flex; gap:8px; margin-bottom:8px; align-items:center; flex-wrap:wrap;}
-.cheat-row input{background:#fff; border:2px solid var(--line); border-radius:4px; padding:8px; font-family:var(--mono); font-size:17px;}
+.cheat-row input{background:var(--card-bg); border:2px solid var(--line); border-radius:4px; padding:8px; font-family:var(--mono); font-size:17px;}
 #tooltip{ position:fixed; background:var(--border-dark); color:#fff; padding:6px 10px; border-radius:4px; font-family:var(--pixel); font-size:11px; z-index:999; pointer-events:none; display:none;}
 .boot-screen{ position:fixed; inset:0; background:#0a0a0a; display:flex; align-items:center; justify-content:center; flex-direction:column; z-index:3000; cursor:pointer; overflow:hidden;}
 .device-scene{ perspective:650px; }
@@ -194,11 +253,11 @@ textarea.codebox{ width:100%; min-height:80px; font-family:var(--mono); font-siz
 .device-dpad::before{ left:38%; top:0; width:24%; height:100%; border-radius:2px;}
 .device-dpad::after{ left:0; top:38%; width:100%; height:24%; border-radius:2px;}
 .device-buttons{ position:absolute; right:2%; top:62%; transform:translateY(-50%) translateZ(2px); width:17%; aspect-ratio:1; min-width:22px;}
-.device-buttons span{ position:absolute; width:34%; aspect-ratio:1; border-radius:50%; background:#3a3a50; box-shadow:inset 0 -1px 2px rgba(0,0,0,.5), 0 1px 1px rgba(255,255,255,.15);}
-.device-buttons span:nth-child(1){ top:0; left:33%;}
-.device-buttons span:nth-child(2){ top:33%; left:0;}
-.device-buttons span:nth-child(3){ top:33%; right:0;}
-.device-buttons span:nth-child(4){ bottom:0; left:33%;}
+.device-buttons span{ position:absolute; width:34%; aspect-ratio:1; border-radius:50%; box-shadow:inset 0 -1px 2px rgba(0,0,0,.5), 0 1px 1px rgba(255,255,255,.25);}
+.device-buttons span:nth-child(1){ top:0; left:33%; background:#e74c3c;}
+.device-buttons span:nth-child(2){ top:33%; left:0; background:#3b82f6;}
+.device-buttons span:nth-child(3){ top:33%; right:0; background:#22c55e;}
+.device-buttons span:nth-child(4){ bottom:0; left:33%; background:#eab308;}
 .device-hinge{
   position:absolute; left:0; right:0; top:50%; height:4%;
   transform:translateY(-50%) translateZ(3px);
@@ -282,7 +341,7 @@ textarea.codebox{ width:100%; min-height:80px; font-family:var(--mono); font-siz
 .gate-step-label{font-family:var(--pixel); font-size:11px; color:var(--border-blue); margin-bottom:14px; letter-spacing:1px;}
 .gate-hint{font-size:14px; color:var(--text-dim); margin-top:4px;}
 .edition-list{display:flex; flex-direction:column; gap:8px; max-height:440px; overflow-y:auto; text-align:left; margin-bottom:4px; padding-right:4px;}
-.edition-item{display:flex; justify-content:space-between; align-items:center; gap:10px; background:#fff; border:2px solid var(--line); border-radius:6px; padding:10px 12px; cursor:pointer; transition:border-color .1s, transform .1s;}
+.edition-item{display:flex; justify-content:space-between; align-items:center; gap:10px; background:var(--card-bg); border:2px solid var(--line); border-radius:6px; padding:10px 12px; cursor:pointer; transition:border-color .1s, transform .1s;}
 .edition-item:hover{border-color:var(--border-blue); transform:translateX(2px);}
 .edition-item .ed-name{font-family:var(--pixel); font-size:12px; color:var(--border-dark); line-height:1.5;}
 .edition-item .ed-region{font-size:14px; color:var(--text-dim); margin-top:2px;}
@@ -292,12 +351,85 @@ textarea.codebox{ width:100%; min-height:80px; font-family:var(--mono); font-siz
 .warn-dot{background:#e0a020; box-shadow:0 0 4px #e0a020;}
 .ok-dot{background:var(--accent); box-shadow:0 0 4px var(--accent);}
 .gen-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px; text-align:left;}
-.gen-check{display:flex; align-items:center; gap:10px; background:#fff; border:2px solid var(--line); border-radius:6px; padding:12px; cursor:pointer; font-size:16px; transition:border-color .1s;}
+.gen-check{display:flex; align-items:center; gap:10px; background:var(--card-bg); border:2px solid var(--line); border-radius:6px; padding:12px; cursor:pointer; font-size:16px; transition:border-color .1s;}
 .gen-check.checked{border-color:var(--accent); background:var(--accent-dim);}
 .gen-check input{width:17px; height:17px; flex-shrink:0; cursor:pointer;}
+.theme-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px;}
+.theme-swatch{ background:var(--card-bg); border:3px solid var(--line); border-radius:8px; padding:10px; cursor:pointer; text-align:center; transition:border-color .1s, transform .08s; user-select:none;}
+.theme-swatch:hover{ transform:translateY(-2px); }
+.theme-swatch.checked{ border-color:var(--accent); box-shadow:0 0 0 2px var(--accent);}
+.theme-swatch-preview{ display:flex; height:34px; border-radius:5px; overflow:hidden; border:2px solid var(--border-dark); margin-bottom:8px;}
+.theme-swatch-preview span{ flex:1; }
+.theme-swatch-name{ font-family:var(--pixel); font-size:11px;}
+.theme-swatch-check{ font-family:var(--pixel); font-size:10px; color:var(--accent); margin-top:4px; visibility:hidden;}
+.theme-swatch.checked .theme-swatch-check{ visibility:visible; }
+
+/* ================= Konsolen-Rahmen (permanentes Gehäuse um die App) ================= */
+.console-frame{
+  max-width:900px; margin:0 auto; padding:14px 14px 22px;
+  background:linear-gradient(155deg,#3a3a52,#1c1c2c 70%);
+  border-radius:22px; box-shadow:0 14px 0 rgba(0,0,0,0.35), 0 20px 40px rgba(0,0,0,0.5), inset 0 2px 3px rgba(255,255,255,0.12);
+  position:relative;
+}
+.console-frame-top{ display:flex; align-items:center; gap:8px; padding:2px 8px 12px;}
+.console-led{ width:9px; height:9px; border-radius:50%; background:var(--accent); box-shadow:0 0 6px var(--accent); flex-shrink:0; animation:consoleLedPulse 2.4s ease-in-out infinite;}
+@keyframes consoleLedPulse{ 0%,100%{opacity:1;} 50%{opacity:.4;} }
+.console-frame-label{ font-family:var(--pixel); font-size:9px; letter-spacing:2px; color:#8888a0;}
+.console-frame .gba-box{ margin-bottom:0; }
+
+/* ================= CRT-Scanlines (optional, Einstellungen) ================= */
+body.crt-on .console-frame::after{
+  content:''; position:absolute; inset:14px 14px 22px; border-radius:14px; pointer-events:none; z-index:5;
+  background:repeating-linear-gradient(0deg, rgba(0,0,0,0.12) 0px, rgba(0,0,0,0.12) 1px, transparent 2px, transparent 4px);
+  mix-blend-mode:multiply;
+}
+
+/* ================= Kompakte Ansicht (Einstellungen) ================= */
+body.compact-on .card{ padding:9px; margin-bottom:9px;}
+body.compact-on .gba-box{ padding:10px;}
+body.compact-on td, body.compact-on th{ padding:5px 4px;}
+body.compact-on .tab{ padding:6px 9px;}
+body.compact-on .mon-sprite-lg{ width:56px; height:56px;}
+body.compact-on .mon-sprite-xl{ width:72px; height:72px;}
+body.compact-on .tt-cell, body.compact-on .tt-colhdr{ width:21px; height:21px; font-size:9px;}
+body.compact-on .tt-rowhdr{ width:26px; font-size:9px; padding:2px 1px;}
+body.compact-on .tt-grouplabel, body.compact-on .tt-super-hdr-vert{ width:16px; padding:2px;}
+body.compact-on .tt-super-hdr, body.compact-on .tt-group-hdr{ padding:3px; font-size:9px;}
+
+/* ================= Tab-Wechsel-Animation (abschaltbar) ================= */
+body.motion-on .panel.active{ animation:panelFadeIn .22s ease; }
+@keyframes panelFadeIn{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+
+.settings-toggle-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 0; border-bottom:1px solid var(--line); font-size:15px; cursor:pointer;}
+.settings-toggle-row:last-child{ border-bottom:none;}
+.settings-toggle-row input{ width:20px; height:20px; flex-shrink:0; cursor:pointer;}
+
+/* ================= Schwebende Hintergrund-Partikel (Pixel-Pokébälle) ================= */
+#floatingParticles{ position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:0; }
+.particle{
+  position:absolute; bottom:-30px; width:16px; height:16px; border-radius:50%;
+  background:linear-gradient(to bottom, #e74c3c 0%, #e74c3c 46%, #1a1a2e 46%, #1a1a2e 54%, #f8f8f0 54%, #f8f8f0 100%);
+  border:2px solid #1a1a2e; opacity:.5;
+  animation-name:particleFloat; animation-timing-function:linear; animation-iteration-count:infinite;
+}
+.particle::after{ content:''; position:absolute; top:50%; left:50%; width:5px; height:5px; margin:-2.5px 0 0 -2.5px; border-radius:50%; background:#f8f8f0; border:1.5px solid #1a1a2e;}
+@keyframes particleFloat{
+  0%{ transform:translateY(0) translateX(0) rotate(0deg); opacity:0;}
+  10%{ opacity:.5;}
+  90%{ opacity:.5;}
+  100%{ transform:translateY(-110vh) translateX(var(--drift,30px)) rotate(360deg); opacity:0;}
+}
+body:not(.motion-on) #floatingParticles{ display:none; }
+
+/* ================= Konsolen-Rahmen Maus-Parallax ================= */
+.console-frame{ transition:transform .15s ease-out; transform-style:preserve-3d; }
+
+/* ================= Sound-Einstellung Icon ================= */
 </style>
 </head>
 <body>
+
+<div id="floatingParticles" aria-hidden="true"></div>
 
 <div id="bootScreen" class="boot-screen">
   <div class="device-scene">
@@ -385,7 +517,9 @@ textarea.codebox{ width:100%; min-height:80px; font-family:var(--mono); font-siz
   <a href="https://buymeacoffee.com/jonixsoullinktracker" target="_blank" rel="noopener" class="bmc-link" style="display:inline-flex; align-items:center; gap:6px; font-family:var(--pixel); font-size:9px; letter-spacing:1px; color:#7a5a1e; background:#ffcb05; border:2px solid #2a5fac; border-radius:5px; padding:5px 10px; text-decoration:none; box-shadow:2px 2px 0 rgba(0,0,0,0.25);">☕ <span data-i18n="bmcLabel">Buy me a coffee</span></a>
 </div>
 
-<div class="gba-box">
+<div class="console-frame">
+  <div class="console-frame-top"><span class="console-led"></span><span class="console-frame-label">SOULLINK™ SYSTEM</span></div>
+  <div class="gba-box">
 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
   <h1><span class="dot" id="statusDot"></span>SOULLINK TRACKER — <span id="headerGameLabel">FireRed</span></h1>
   <div style="display:flex; align-items:center; gap:8px; font-family:var(--pixel); font-size:12px; color:var(--text-dim);">
@@ -435,6 +569,7 @@ textarea.codebox{ width:100%; min-height:80px; font-family:var(--mono); font-siz
   <div class="tab" data-tab="catch" data-i18n="tabCatch">Fangrechner</div>
   <div class="tab" data-tab="types" data-i18n="tabTypes">Typentabelle</div>
   <div class="tab" data-tab="backup" data-i18n="tabBackup">Backup</div>
+  <div class="tab" data-tab="settings" data-i18n="tabSettings">⚙️ Einstellungen</div>
 </div>
 
 <div id="panel-links" class="panel active">
@@ -449,20 +584,22 @@ textarea.codebox{ width:100%; min-height:80px; font-family:var(--mono); font-siz
         <input class="player-name-input" id="p2name" type="text" data-i18n-placeholder="player2Default" placeholder="Spieler 2">
       </div>
     </div>
-    <table>
+    <div style="overflow-x:auto;">
+    <table style="min-width:640px; table-layout:fixed;">
       <thead>
         <tr>
-          <th style="width:16%" data-i18n="colRoute">Route</th>
-          <th id="th1" style="width:24%">Spieler 1</th>
-          <th style="width:12%" data-i18n="colCaught">Gefangen</th>
-          <th id="th2" style="width:24%">Spieler 2</th>
-          <th style="width:12%" data-i18n="colCaught">Gefangen</th>
-          <th style="width:6%" data-i18n="colStatus">Status</th>
-          <th style="width:6%"></th>
+          <th style="width:14%" data-i18n="colRoute">Route</th>
+          <th id="th1" style="width:22%">Spieler 1</th>
+          <th style="width:12%; font-size:11px; padding-left:3px; padding-right:3px;" data-i18n="colCaught">Gefangen</th>
+          <th id="th2" style="width:22%">Spieler 2</th>
+          <th style="width:12%; font-size:11px; padding-left:3px; padding-right:3px;" data-i18n="colCaught">Gefangen</th>
+          <th style="width:9%; font-size:11px; padding-left:3px; padding-right:3px;" data-i18n="colStatus">Status</th>
+          <th style="width:9%"></th>
         </tr>
       </thead>
       <tbody id="linksBody"></tbody>
     </table>
+    </div>
     <div style="margin-top:12px;">
       <button class="btn btn-primary" id="addLinkBtn" data-i18n="addRoute">+ Neue Route</button>
     </div>
@@ -482,8 +619,8 @@ textarea.codebox{ width:100%; min-height:80px; font-family:var(--mono); font-siz
 <div id="panel-dex" class="panel">
   <div class="legend">
     <span><span class="swatch" style="background:var(--accent-dim);border:2px solid var(--accent);"></span> <span data-i18n="legendCaught">gefangen — ganze Linie grün</span></span>
-    <span><span class="swatch" style="background:#fff;border:2px solid var(--line);"></span> <span data-i18n="legendUnseen">noch nirgends angetroffen</span></span>
-    <span><span class="swatch" style="background:#fff;border:2px solid var(--lock);opacity:0.6;"></span> <span data-i18n="legendLocked">gesperrt — angetroffen, aber nicht gefangen</span></span>
+    <span><span class="swatch" style="background:var(--card-bg);border:2px solid var(--line);"></span> <span data-i18n="legendUnseen">noch nirgends angetroffen</span></span>
+    <span><span class="swatch" style="background:var(--card-bg);border:2px solid var(--lock);opacity:0.6;"></span> <span data-i18n="legendLocked">gesperrt — angetroffen, aber nicht gefangen</span></span>
   </div>
   <div class="card" style="padding:14px;">
     <div style="font-size:12px;color:var(--text-dim);margin-bottom:6px;font-family:var(--pixel);" data-i18n="checkPokemon">POKÉMON PRÜFEN</div>
@@ -532,7 +669,10 @@ textarea.codebox{ width:100%; min-height:80px; font-family:var(--mono); font-siz
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:6px;">
       <div>
         <div style="font-size:12px;color:var(--text-dim);margin-bottom:4px;font-family:var(--pixel);" data-i18n="catchSpeciesLabel">POKÉMON</div>
-        <input class="search-box" id="catchSpecies" type="text" list="dexdatalist" data-i18n-placeholder="namePlaceholder" placeholder="Name eingeben...">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <img id="catchSpeciesImg" class="mon-sprite-xl" src="" alt="" loading="lazy" style="display:none;">
+          <input class="search-box" id="catchSpecies" type="text" list="dexdatalist" data-i18n-placeholder="namePlaceholder" placeholder="Name eingeben..." style="flex:1; min-width:0;">
+        </div>
       </div>
       <div>
         <div style="font-size:12px;color:var(--text-dim);margin-bottom:4px;font-family:var(--pixel);" data-i18n="catchWildLevelLabel">LEVEL (WILD)</div>
@@ -608,7 +748,36 @@ textarea.codebox{ width:100%; min-height:80px; font-family:var(--mono); font-siz
   </div>
 </div>
 
+<div id="panel-settings" class="panel">
+  <div class="card">
+    <div style="font-family:var(--pixel);font-size:13px;margin-bottom:8px;" data-i18n="themeTitle">FARBSCHEMA</div>
+    <p class="subtitle" style="margin-bottom:14px;" data-i18n="themeHint">Rein optisch — ändert nichts an euren Daten. Nur bei dir sichtbar, wird nicht mit eurem Mitspieler geteilt.</p>
+    <div class="theme-grid" id="themeGrid"></div>
+
+    <div style="margin-top:22px; padding-top:16px; border-top:1px dashed var(--line);">
+      <div style="font-family:var(--pixel);font-size:13px;margin-bottom:8px;" data-i18n="displayTitle">ANZEIGE</div>
+      <label class="settings-toggle-row">
+        <span data-i18n="scanlineLabel">📺 CRT-Scanlines (Retro-Bildschirmeffekt)</span>
+        <input type="checkbox" id="scanlineToggle">
+      </label>
+      <label class="settings-toggle-row">
+        <span data-i18n="compactLabel">📐 Kompakte Ansicht (weniger Abstand, mehr auf einen Blick)</span>
+        <input type="checkbox" id="compactToggle">
+      </label>
+      <label class="settings-toggle-row">
+        <span data-i18n="motionLabel">🎬 Animationen (Tab-Wechsel, Übergänge)</span>
+        <input type="checkbox" id="motionToggle" checked>
+      </label>
+      <label class="settings-toggle-row">
+        <span data-i18n="soundLabel">🔊 Sound-Effekte (Klicks, Tab-Wechsel)</span>
+        <input type="checkbox" id="soundToggle" checked>
+      </label>
+    </div>
+  </div>
+</div>
+
 </div><!-- /gba-box -->
+</div><!-- /console-frame -->
 <div id="tooltip"></div>
 
 <script>
@@ -1738,6 +1907,14 @@ const I18N = {
     savingStatus:"speichere...", savedStatus:"gespeichert", saveFailedStatus:"Speichern fehlgeschlagen",
     player1Default:"Spieler 1", player2Default:"Spieler 2",
     bmcLabel:"Kauf mir einen Kaffee",
+    tabSettings:"⚙️ Einstellungen", themeTitle:"FARBSCHEMA",
+    themeHint:"Rein optisch — ändert nichts an euren Daten. Nur bei dir sichtbar, wird nicht mit eurem Mitspieler geteilt.",
+    themeActive:"aktiv", themeKanto:"Kanto Classic", themePocket:"Taschenmonster-Grün",
+    themeEmber:"Glutrot", themeAqua:"Tiefsee-Blau", themeTwilight:"Dämmerung", themeElectric:"Elektro-Gelb",
+    displayTitle:"ANZEIGE", scanlineLabel:"📺 CRT-Scanlines (Retro-Bildschirmeffekt)",
+    compactLabel:"📐 Kompakte Ansicht (weniger Abstand, mehr auf einen Blick)",
+    motionLabel:"🎬 Animationen (Tab-Wechsel, Übergänge)",
+    soundLabel:"🔊 Sound-Effekte (Klicks, Tab-Wechsel)",
     placeholderFightName:"Noch keine Kampf-Daten für dieses Spiel hinterlegt — bitte manuell unter \"Kämpfe bearbeiten\" eintragen",
     // Fangrechner
     catchTitle:"FANGCHANCEN-RECHNER", catchIntro:"Berechnet für euer aktuelles Spiel die Fangchance pro Ball anhand von HP, Status und Situation.",
@@ -1830,6 +2007,14 @@ const I18N = {
     savingStatus:"saving...", savedStatus:"saved", saveFailedStatus:"Save failed",
     player1Default:"Player 1", player2Default:"Player 2",
     bmcLabel:"Buy me a coffee",
+    tabSettings:"⚙️ Settings", themeTitle:"COLOR SCHEME",
+    themeHint:"Purely visual — doesn't change your data. Only visible to you, not shared with your partner.",
+    themeActive:"active", themeKanto:"Kanto Classic", themePocket:"Pocket Monster Green",
+    themeEmber:"Ember Red", themeAqua:"Deep Sea Blue", themeTwilight:"Twilight", themeElectric:"Electric Yellow",
+    displayTitle:"DISPLAY", scanlineLabel:"📺 CRT scanlines (retro screen effect)",
+    compactLabel:"📐 Compact view (less spacing, more at a glance)",
+    motionLabel:"🎬 Animations (tab switches, transitions)",
+    soundLabel:"🔊 Sound effects (clicks, tab switches)",
     placeholderFightName:"No battle data recorded for this game yet — please add it manually under \"Edit Battles\"",
     // Catch Calculator
     catchTitle:"CATCH CHANCE CALCULATOR", catchIntro:"Calculates the catch chance per ball for your current game based on HP, status and situation.",
@@ -1895,6 +2080,7 @@ function applyLanguage(lang){
     renderTypeGrid();
     renderCatchCalc();
   }
+  renderThemeGrid();
 }
 
 // ---- Schritt 1: Edition wählen ----
@@ -2153,7 +2339,7 @@ function renderCapBar(){
   caps.forEach((cap,i)=>{
     if(cap===null) return;
     const chip = document.createElement('div');
-    chip.style.background='#fff'; chip.style.border='2px solid var(--line)'; chip.style.borderRadius='6px';
+    chip.style.background='var(--card-bg)'; chip.style.color='var(--text)'; chip.style.border='2px solid var(--line)'; chip.style.borderRadius='6px';
     chip.style.padding='6px 10px'; chip.style.fontFamily='var(--pixel)'; chip.style.fontSize='13px';
     chip.textContent = '#'+(i+1)+': Lv. '+cap;
     row.appendChild(chip);
@@ -2205,6 +2391,9 @@ document.getElementById('newTryBtn').addEventListener('click', ()=>{
 // (sonst zeigt ein leerer Name im Englischen weiter "Spieler 1" an, weil das die gespeicherten Daten wären).
 function playerName(idx){ return state.players[idx] || t('player'+(idx+1)+'Default'); }
 function nameForDex(id){ if(!id) return ""; const p = byId[id]; return p ? p.name : ""; }
+// Sprites von PokéAPI (öffentlicher Sprite-CDN, gleiche Quelle wie die Fangraten-Daten).
+function spriteUrl(id){ return 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/'+id+'.png'; }
+function spriteImgTag(id, cls){ if(!id) return ''; return '<img class="'+(cls||'mon-sprite')+'" src="'+spriteUrl(id)+'" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">'; }
 function idForName(name){ name = (name||"").trim().toLowerCase(); if(!name) return 0; const found = POKEMON.find(p => p[1].toLowerCase() === name); return found ? found[0] : -1; }
 
 function renderPlayerNames(){
@@ -2243,6 +2432,12 @@ function renderLinks(){
     ['p1','p2'].forEach(key=>{
       const tdMon = document.createElement('td');
       const wrap = document.createElement('div'); wrap.className='mon-cell';
+      if(link[key].dex){
+        const sprite = document.createElement('img'); sprite.className='mon-sprite-lg'; sprite.src=spriteUrl(link[key].dex); sprite.alt=''; sprite.loading='lazy';
+        sprite.onerror=function(){this.style.visibility='hidden';};
+        wrap.appendChild(sprite);
+      }
+      const info = document.createElement('div'); info.className='mon-cell-info';
       const inp = document.createElement('input');
       inp.className='mon-input'; inp.type='text'; inp.setAttribute('list','dexdatalist');
       inp.placeholder=t('pokemonPlaceholder'); inp.value = nameForDex(link[key].dex);
@@ -2252,12 +2447,13 @@ function renderLinks(){
         link[key].dex = id; inp.style.borderColor='';
         renderLinks(); renderDex(); renderTeam(); renderCapBar(); scheduleSave();
       });
-      wrap.appendChild(inp);
+      info.appendChild(inp);
+      wrap.appendChild(info);
       if(link[key].dex){
         const badges = document.createElement('span');
         badges.innerHTML = typeBadgesFor(link[key].dex);
-        wrap.appendChild(badges);
-        addEvolveControl(wrap, link, key, ()=>{ renderLinks(); renderDex(); renderTeam(); renderCapBar(); scheduleSave(); });
+        info.appendChild(badges);
+        addEvolveControl(info, link, key, ()=>{ renderLinks(); renderDex(); renderTeam(); renderCapBar(); scheduleSave(); });
       }
       tdMon.appendChild(wrap);
       tr.appendChild(tdMon);
@@ -2390,7 +2586,7 @@ function renderDexList(searchTerm){
       let tags = '';
       if(rec){ rec.caughtPlayers.forEach(pi => tags += playerTag(pi) + (rec.dead.has(pi)?' 💀':'')); }
       const icon = status==='locked' ? ' 🔒' : (status==='caught' ? ' ✓' : '');
-      chip.innerHTML = '<span class="num">#'+String(p.id).padStart(3,'0')+'</span> '+p.name+icon+tags;
+      chip.innerHTML = spriteImgTag(id)+'<span class="chip-info"><span class="num">#'+String(p.id).padStart(3,'0')+'</span><span>'+p.name+icon+tags+'</span></span>';
       chip.addEventListener('mouseenter', e=> showTooltip(e, typeBadgesFor(id)));
       chip.addEventListener('mousemove', e=> showTooltip(e, typeBadgesFor(id)));
       chip.addEventListener('mouseleave', hideTooltip);
@@ -2502,16 +2698,20 @@ function renderTeamGrid(containerId, playerKey){
     });
     const link = tid ? state.links.find(l=>l.id===tid) : null;
     if(link && link.p1.caught && link.p2.caught){
+      const dexId = link[playerKey].dex;
+      if(dexId){ const img = document.createElement('img'); img.className='mon-sprite-lg'; img.src=spriteUrl(dexId); img.alt=''; img.loading='lazy'; img.onerror=function(){this.style.visibility='hidden';}; box.appendChild(img); }
+      const info = document.createElement('div'); info.className='tb-info';
       const nameRow = document.createElement('div'); nameRow.className='tb-name';
       nameRow.textContent = nameForDex(link[playerKey].dex) || '?';
-      box.appendChild(nameRow);
-      const typeRow = document.createElement('div'); typeRow.style.marginTop='4px';
+      info.appendChild(nameRow);
+      const typeRow = document.createElement('div');
       typeRow.innerHTML = typeBadgesFor(link[playerKey].dex);
-      box.appendChild(typeRow);
-      const pwrRow = document.createElement('div'); pwrRow.style.fontSize='12px'; pwrRow.style.color='var(--text-dim)'; pwrRow.style.marginTop='2px'; pwrRow.style.fontFamily='var(--mono)';
+      info.appendChild(typeRow);
+      const pwrRow = document.createElement('div'); pwrRow.style.fontSize='12px'; pwrRow.style.color='var(--text-dim)'; pwrRow.style.fontFamily='var(--mono)';
       pwrRow.textContent = 'PWR '+powerScoreFor(link[playerKey].dex);
-      box.appendChild(pwrRow);
-      addEvolveControl(box, link, playerKey, ()=>{ renderTeam(); renderDex(); renderLinks(); renderCapBar(); scheduleSave(); });
+      info.appendChild(pwrRow);
+      addEvolveControl(info, link, playerKey, ()=>{ renderTeam(); renderDex(); renderLinks(); renderCapBar(); scheduleSave(); });
+      box.appendChild(info);
       const rm = document.createElement('span'); rm.className='remove-x'; rm.textContent='✕'; rm.title=t('removeFromTeam');
       rm.addEventListener('click', e=>{ e.stopPropagation(); state.team[i]=null; renderTeam(); renderCapBar(); scheduleSave(); });
       box.appendChild(rm);
@@ -2537,8 +2737,8 @@ function renderTeamAvailable(){
     card.addEventListener('dragstart', e=>{ e.dataTransfer.setData('text/plain', link.id); });
     const info = document.createElement('div');
     info.innerHTML = '<b>'+(link.route||t('colRoute'))+'</b><br>'+
-      playerName(0)+': '+nameForDex(link.p1.dex)+' '+typeBadgesFor(link.p1.dex)+'<br>'+
-      playerName(1)+': '+nameForDex(link.p2.dex)+' '+typeBadgesFor(link.p2.dex);
+      spriteImgTag(link.p1.dex,'mon-sprite-sm')+playerName(0)+': '+nameForDex(link.p1.dex)+' '+typeBadgesFor(link.p1.dex)+'<br>'+
+      spriteImgTag(link.p2.dex,'mon-sprite-sm')+playerName(1)+': '+nameForDex(link.p2.dex)+' '+typeBadgesFor(link.p2.dex);
     card.appendChild(info);
     const addBtn = document.createElement('button'); addBtn.className='btn btn-sm btn-primary'; addBtn.textContent=t('addInsert');
     addBtn.addEventListener('click', ()=>{
@@ -2760,7 +2960,26 @@ function renderTypeGrid(){
   let note = genNoteKeys[gen] ? t(genNoteKeys[gen]) : '';
   if(!showSplit) note += t('physSpecNote');
   let html = '<div class="tt-gen-note">'+note+'</div>';
-  html += '<table class="tt-table"><thead>';
+  // table-layout:fixed braucht eine explizite Gesamtbreite, sonst quetscht der Browser alle
+  // Spalten auf die verfügbare Breite zusammen (unlesbar) statt den Wrapper scrollen zu lassen.
+  // Muss zur Kompakt-Ansicht passen (dort sind die Spalten schmaler), sonst stimmt die Breite nicht mehr.
+  const isCompact = document.body.classList.contains('compact-on');
+  const ttColW = isCompact ? 23 : 30, ttLabelW = isCompact ? 11 : 14, ttRowhdrW = isCompact ? 26 : 34;
+  const labelColsWidth = ttLabelW + (showSplit ? ttLabelW : 0) + ttRowhdrW;
+  const tableWidth = labelColsWidth + totalCols*ttColW;
+  // Spaltenbreiten als Prozentanteile statt fester px: die Tabelle füllt so die volle
+  // (rechteckige) Breite ihrer Karte aus, statt als kleines Quadrat mittig zu hängen.
+  // min-width in px (== Summe der ursprünglichen Spaltenbreiten) sorgt dafür, dass auf
+  // schmalen Screens der Wrapper scrollt statt die Zellen unlesbar zu quetschen.
+  const pct = w => (w/tableWidth*100).toFixed(3);
+  html += '<table class="tt-table" style="width:100%;min-width:'+tableWidth+'px;"><colgroup>';
+  // table-layout:fixed liest Spaltenbreiten NUR aus der ersten Zeile — die besteht hier aber
+  // nur aus verbundenen (colspan) Zellen ohne Einzelbreiten, daher explizit über <col> je Spalte.
+  html += '<col style="width:'+pct(ttLabelW)+'%;">';
+  if(showSplit) html += '<col style="width:'+pct(ttLabelW)+'%;">';
+  html += '<col style="width:'+pct(ttRowhdrW)+'%;">';
+  allTypes.forEach(()=>{ html += '<col style="width:'+pct(ttColW)+'%;">'; });
+  html += '</colgroup><thead>';
   html += '<tr><th class="tt-corner" colspan="'+cornerCols+'"></th><th colspan="'+totalCols+'" class="tt-super-hdr">'+t('verteidiger')+'</th></tr>';
   if(showSplit){
     html += '<tr><th class="tt-corner" colspan="'+cornerCols+'"></th><th colspan="'+physTypes.length+'" class="tt-group-hdr tt-group-phys">'+t('physisch')+'</th><th colspan="'+specTypes.length+'" class="tt-group-hdr tt-group-spec">'+t('spezial')+'</th></tr>';
@@ -2773,13 +2992,13 @@ function renderTypeGrid(){
   html += '</tr></thead><tbody>';
 
   let firstRowOverall = true;
-  function rowsFor(group, groupLabel){
+  function rowsFor(group, groupLabel, groupCls){
     group.forEach((atk,gi)=>{
       const isFirst = gi===0;
       html += '<tr'+(showSplit && atk==='Fire'?' class="tt-divider-top"':'')+'>';
       if(firstRowOverall){ html += '<th class="tt-super-hdr-vert" rowspan="'+totalRows+'">'+t('angreifer')+'</th>'; firstRowOverall=false; }
-      if(showSplit && isFirst) html += '<th class="tt-grouplabel" rowspan="'+group.length+'">'+groupLabel+'</th>';
-      html += '<th class="tt-rowhdr" style="background:'+TYPE_COLORS[atk]+';color:'+textColorFor(TYPE_COLORS[atk])+';" data-type-row="'+atk+'">'+atk.toUpperCase()+'</th>';
+      if(showSplit && isFirst) html += '<th class="tt-grouplabel '+groupCls+'" rowspan="'+group.length+'">'+groupLabel+'</th>';
+      html += '<th class="tt-rowhdr" style="background:'+TYPE_COLORS[atk]+';color:'+textColorFor(TYPE_COLORS[atk])+';" data-type-row="'+atk+'">'+TYPE_ABBR[atk]+'</th>';
       allTypes.forEach((def,i)=>{
         const rule = rules[atk];
         let cls='tt-1', val='';
@@ -2793,10 +3012,10 @@ function renderTypeGrid(){
     });
   }
   if(showSplit){
-    rowsFor(physTypes, t('physisch'));
-    rowsFor(specTypes, t('spezial'));
+    rowsFor(physTypes, t('physisch'), 'tt-group-phys');
+    rowsFor(specTypes, t('spezial'), 'tt-group-spec');
   } else {
-    rowsFor(allTypes, '');
+    rowsFor(allTypes, '', '');
   }
   html += '</tbody></table>';
   wrap.innerHTML = html;
@@ -3051,14 +3270,21 @@ function updateCatchContextVisibility(gameId){
   });
   document.getElementById('catchContextEmptyHint').style.display = anyVisible ? 'none' : 'block';
 }
+function updateCatchSprite(speciesId){
+  const img = document.getElementById('catchSpeciesImg');
+  if(!speciesId){ img.style.display = 'none'; return; }
+  img.src = spriteUrl(speciesId);
+  img.style.display = '';
+}
 function renderCatchCalc(){
   const wrap = document.getElementById('catchResultWrap');
   const noteEl = document.getElementById('catchNote');
   const gameId = state.game;
   if(gameId){ populateBallSelect(gameId); updateCatchContextVisibility(gameId); }
   const result = computeCatchRows();
-  if(!result || result.error==='none'){ wrap.innerHTML=''; noteEl.textContent = t('catchNoSpecies'); return; }
-  if(result.error==='unknown'){ wrap.innerHTML=''; noteEl.textContent = t('catchUnknownSpecies'); return; }
+  if(!result || result.error==='none'){ wrap.innerHTML=''; noteEl.textContent = t('catchNoSpecies'); updateCatchSprite(null); return; }
+  if(result.error==='unknown'){ wrap.innerHTML=''; noteEl.textContent = t('catchUnknownSpecies'); updateCatchSprite(null); return; }
+  updateCatchSprite(result.speciesId);
   let note = t('catchApproxNote');
   if(result.gen===1) note = t('catchGen1Note') + ' ' + note;
   if(result.gen===2) note = t('catchGen2Note') + ' ' + note;
@@ -3102,6 +3328,11 @@ document.querySelectorAll('.tab').forEach(tab=>{
     if(tab.dataset.tab==='cheats') renderCheats();
     if(tab.dataset.tab==='types') renderTypeGrid();
     if(tab.dataset.tab==='catch') renderCatchCalc();
+    if(tab.dataset.tab==='settings') renderThemeGrid();
+    // Rest-Schräglage vom Maus-Parallax sofort zurücksetzen, sonst "hängt" die letzte
+    // Neigung kurz auf dem neuen Tab, bis die Maus sich wieder bewegt (v.a. nervig im Pokédex).
+    const frameEl = document.querySelector('.console-frame');
+    if(frameEl) frameEl.style.transform = '';
   });
 });
 
@@ -3153,6 +3384,113 @@ async function boot(){
   startAutoRefresh();
   if(!state.game) showGameGate();
 }
+
+// ================= Farbschema (rein optisch, lokal pro Gerät) =================
+const THEMES = [
+  {id:'kanto',    nameKey:'themeKanto',    swatch:['#1d1a30','#3b4cca','#ffcb05']},
+  {id:'pocket',   nameKey:'themePocket',   swatch:['#0a2408','#306230','#c8d84f']},
+  {id:'ember',    nameKey:'themeEmber',    swatch:['#2a1410','#c1440e','#ffcb05']},
+  {id:'aqua',     nameKey:'themeAqua',     swatch:['#0a1f2e','#1b6ca8','#ffd166']},
+  {id:'twilight', nameKey:'themeTwilight', swatch:['#14091f','#8a4fc9','#f4c95d']},
+  {id:'electric', nameKey:'themeElectric', swatch:['#2b2410','#3b4cca','#ffcb05']}
+];
+const THEME_STORAGE_KEY = 'soullinkTrackerTheme';
+function applyTheme(themeId, skipSave){
+  if(themeId === 'kanto') document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.setAttribute('data-theme', themeId);
+  if(!skipSave){ try{ localStorage.setItem(THEME_STORAGE_KEY, themeId); }catch(e){} }
+  renderThemeGrid();
+}
+function currentTheme(){
+  try{ return localStorage.getItem(THEME_STORAGE_KEY) || 'kanto'; }catch(e){ return 'kanto'; }
+}
+function renderThemeGrid(){
+  const grid = document.getElementById('themeGrid');
+  if(!grid) return;
+  const active = currentTheme();
+  grid.innerHTML = '';
+  THEMES.forEach(theme=>{
+    const el = document.createElement('div');
+    el.className = 'theme-swatch' + (theme.id===active ? ' checked' : '');
+    el.innerHTML = '<div class="theme-swatch-preview">'+theme.swatch.map(c=>'<span style="background:'+c+';"></span>').join('')+'</div>'+
+      '<div class="theme-swatch-name">'+t(theme.nameKey)+'</div>'+
+      '<div class="theme-swatch-check">✓ '+t('themeActive')+'</div>';
+    el.addEventListener('click', ()=> applyTheme(theme.id));
+    grid.appendChild(el);
+  });
+}
+(function(){ applyTheme(currentTheme(), true); })();
+
+// ================= Anzeige-Einstellungen (CRT/Kompakt/Animationen, lokal pro Gerät) =================
+const DISPLAY_TOGGLES = [
+  {id:'scanlineToggle', bodyClass:'crt-on', storageKey:'soullinkCrt', default:false},
+  {id:'compactToggle', bodyClass:'compact-on', storageKey:'soullinkCompact', default:false},
+  {id:'motionToggle', bodyClass:'motion-on', storageKey:'soullinkMotion', default:true},
+  {id:'soundToggle', bodyClass:'sound-on', storageKey:'soullinkSound', default:true}
+];
+function initDisplayToggles(){
+  DISPLAY_TOGGLES.forEach(cfg=>{
+    const el = document.getElementById(cfg.id);
+    if(!el) return;
+    let saved;
+    try{ const raw = localStorage.getItem(cfg.storageKey); saved = raw===null ? cfg.default : raw==='1'; }catch(e){ saved = cfg.default; }
+    el.checked = saved;
+    document.body.classList.toggle(cfg.bodyClass, saved);
+    el.addEventListener('change', ()=>{
+      document.body.classList.toggle(cfg.bodyClass, el.checked);
+      try{ localStorage.setItem(cfg.storageKey, el.checked ? '1' : '0'); }catch(e){}
+      // Typentabelle hat eine feste, kompakt-abhängige Breite (table-layout:fixed) — muss beim
+      // Umschalten neu berechnet werden, sonst passt die Breite nicht mehr zur Zellgröße.
+      if(cfg.bodyClass==='compact-on' && typeof renderTypeGrid==='function') renderTypeGrid();
+    });
+  });
+}
+initDisplayToggles();
+
+// ================= Schwebende Hintergrund-Partikel =================
+function spawnParticles(){
+  const holder = document.getElementById('floatingParticles');
+  if(!holder) return;
+  const n = 10;
+  for(let i=0;i<n;i++){
+    const p = document.createElement('div'); p.className='particle';
+    const left = Math.random()*100;
+    const duration = 14 + Math.random()*14;
+    const delay = -Math.random()*duration;
+    const drift = (Math.random()*80-40)+'px';
+    const size = 10 + Math.random()*12;
+    p.style.left = left+'vw';
+    p.style.width = size+'px'; p.style.height = size+'px';
+    p.style.setProperty('--drift', drift);
+    p.style.animationDuration = duration+'s';
+    p.style.animationDelay = delay+'s';
+    holder.appendChild(p);
+  }
+}
+spawnParticles();
+
+// ================= GBA-Piepser (Web Audio API, kein externes Asset nötig) =================
+let audioCtx = null;
+function playBeep(freq, dur, type){
+  if(!document.body.classList.contains('sound-on')) return;
+  try{
+    if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if(audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type || 'square';
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(); osc.stop(audioCtx.currentTime + dur);
+  }catch(e){}
+}
+document.addEventListener('click', e=>{
+  if(e.target.closest('.tab')) playBeep(660, .07);
+  else if(e.target.closest('.btn')) playBeep(880, .05);
+  else if(e.target.closest('.theme-swatch')) playBeep(990, .08, 'triangle');
+});
 
 function startApp(){
   showBootScreen();
